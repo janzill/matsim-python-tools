@@ -1,7 +1,7 @@
 import xopen
 import xml.etree.ElementTree as ET
 
-def plan_reader(filename, selectedPlansOnly = False):
+def plan_reader(filename, selectedPlansOnly=False, additional_elements=None):
 
     person = None
     tree = ET.iterparse(xopen.xopen(filename), events=['start','end'])
@@ -23,6 +23,11 @@ def plan_reader(filename, selectedPlansOnly = False):
 
             yield (person, elem)
 
+            # free memory. Otherwise the data is kept in memory
+            elem.clear()
+        
+        elif elem.tag in additional_elements and xml_event == 'end':
+            yield (person, elem)
             # free memory. Otherwise the data is kept in memory
             elem.clear()
         
