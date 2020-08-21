@@ -42,7 +42,10 @@ class XmlWriter:
         return "true" if value else "false"
 
     @staticmethod
-    def time(time: int):
+    def time(time: Union[str, int]):
+        if isinstance(time, str):
+            return time
+
         if np.isnan(time):
             return None
 
@@ -132,7 +135,7 @@ class PopulationWriter(XmlWriter):
         self._write_line('</plan>')
 
     def add_activity(self, type: str, x: float, y: float, facility_id: str = None,
-                     start_time: int = None, end_time: int = None):
+                     start_time: Union[str, int] = None, end_time: Union[str, int] = None, max_duration: Union[str, int] = None):
         self._require_scope(self.PLAN_SCOPE)
         self._write_indent()
         self._write('<activity ')
@@ -141,15 +144,16 @@ class PopulationWriter(XmlWriter):
         if facility_id: self._write(f'facility="{facility_id}" ')
         if start_time: self._write(f'start_time="{self.time(start_time)}" ')
         if end_time: self._write(f'end_time="{self.time(end_time)}" ')
+        if max_duration: self._write(f'end_time="{self.time(max_duration)}" ')
         self._write('/>\n')
 
-    def add_leg(self, mode: str, departure_time: int, travel_time: int):
+    def add_leg(self, mode: str, departure_time: Union[str, int] = None, travel_time: Union[str, int] = None):
         self._require_scope(self.PLAN_SCOPE)
         self._write_indent()
         self._write('<leg ')
         self._write(f'mode="{mode}" ')
-        self._write(f'dep_time="{self.time(departure_time)}" ')
-        self._write(f'trav_time="{self.time(travel_time)}" ')
+        if departure_time: self._write(f'dep_time="{self.time(departure_time)}" ')
+        if travel_time: self._write(f'trav_time="{self.time(travel_time)}" ')
         self._write('/>\n')
 
 
