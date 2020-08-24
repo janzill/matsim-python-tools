@@ -26,7 +26,7 @@ def plan_reader(filename, selectedPlansOnly=False, additional_elements=None):
             # free memory. Otherwise the data is kept in memory
             elem.clear()
         
-        elif elem.tag in additional_elements and xml_event == 'end':
+        elif additional_elements and elem.tag in additional_elements and xml_event == 'end':
             yield (person, elem)
             # free memory. Otherwise the data is kept in memory
             elem.clear()
